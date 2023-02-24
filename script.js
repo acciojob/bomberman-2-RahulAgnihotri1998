@@ -1,162 +1,499 @@
-let gameContainer = document.getElementById("game-container");
-let gameOver = false;
-let score = 0;
-document.getElementById("score-card").innerHTML = "Score: " + score;
+//your code here
+let board = document.querySelector('.grid-container')
 
-let arr = [];
-let index = 0;
-while (arr.length !== 81) {
-  let temp = Math.floor(Math.random() * 100);
-  if (arr.indexOf(temp) === -1 && temp >= 1 && temp <= 81) {
-    arr.push(temp);
-  }
-}
-let boxValues = [];
-for(let i = 0; i < 9; i++) {
-  let rowArray = [];
-  for(let j = 0; j < 9; j++) {
-    rowArray.push(arr[index]);
-    index++;
-  }
-  boxValues.unshift(rowArray);
+for (let i = 0; i < 100; i++) {
+    let boardCell = document.createElement('div')
+    boardCell.id = i;
+    boardCell.classList.add('grid-item', 'valid')
+    boardCell.setAttribute('data', "0")
+
+    boardCell.innerText = i
+    board.appendChild(boardCell)
 }
 
-let bombLocation = [];
-while (bombLocation.length !== 10) {
-  let temp = Math.floor(Math.random() * 100);
-  if (bombLocation.indexOf(temp) === -1 && temp >= 1 && temp <= 81) {
-    bombLocation.push(temp);
-  }
+let bombIds = [];
+while (bombIds.length < 10) {
+    let randomId = Math.floor(Math.random() * 60) + 20;
+    if (!bombIds.includes(randomId)) {
+        bombIds.push(randomId);
+    }
 }
 
-const getId = (i, j) => {
-  return i.toString() + j.toString();
+for (let i = 0; i < bombIds.length; i++) {
+    let bombDiv = document.getElementById(bombIds[i]);
+    bombDiv.classList.remove('valid');
+    bombDiv.classList.add('bomb');
+    bombDiv.style.backgroundColor = 'red';
+}
+
+let bombArrDATA = {
+    left: -1,
+    right: "+" + 1,
+    up: -10,
+    down: "+" + 10,
+    upLeft: -11,
+    upRight: -9,
+    downLeft: "+" + 9,
+    downRight: "+" + 11
 };
-let grid = document.createElement("div");
 
-for (let i = 0; i < 9; i++) {
-  let rowEle = document.createElement("div");
-  rowEle.className = "row";
+let bombArrDATARIGHT = {
+    left: -1,
+    up: -10,
+    down: "+" + 10,
+    upLeft: -11,
+    downLeft: "+" + 9,
+};
 
-  for (let j = 0; j < 9; j++) {
-    let cellEle = document.createElement("div");
-    cellEle.className = "cell center";
-    cellEle.setAttribute("id", getId(i, j));
-    cellEle.addEventListener("mousedown", () => handleClick(cellEle));
-    rowEle.appendChild(cellEle);
-  }
-  grid.appendChild(rowEle);
-}
+let bombArrDATALEFT = {
+    right: "+" + 1,
+    up: -10,
+    down: "+" + 10,
+    upRight: -9,
+    downRight: "+" + 11
+};
 
-gameContainer.appendChild(grid);
+console.log(bombIds);
+for (let i = 0; i < bombIds.length; i++) {
+    console.log("index---->", i);
+    console.log("bombid>>>", bombIds[i]);
+    if (bombIds[i] % 10 === 0) {
+        console.log("hiii");
+        for (let bomb in bombArrDATALEFT) {
+            let bombsNumber = eval(bombIds[i] + String(bombArrDATALEFT[bomb]))
+            if (bombsNumber % 10 !== 0 && (bombsNumber - 9) % 10 !== 0) {
+                let bombsNumberDiv = document.getElementById(bombsNumber)
+        let newbombcount = 0;
+                for (let newbomb in bombArrDATA) {
+                    console.log("bombsNumber", bombsNumber);
+                    let newBombnumbers = eval(bombsNumber + String(bombArrDATA[newbomb]))
+                    console.log("newBombnumbersDiv>>>>", newBombnumbers);
+                    let divOfnewNumber = document.getElementById(newBombnumbers);
+                    console.log(divOfnewNumber);
+                    console.log("newbombcount-before if>>>>", newbombcount);
+                    if (divOfnewNumber.classList.contains('bomb')) {
+                        newbombcount++;
+                        console.log("newbombcount-inside if>>>>", newbombcount);
+                    }
+                    console.log("newbombcount-after if>>>>", newbombcount);
 
-const handleClick = (cell) => {
-  if (gameOver) {
-    return;
-  }
+                }
+                bombsNumberDiv.setAttribute('data',newbombcount)
+                console.log(bombsNumberDiv);
+            } else if (bombsNumber % 10 === 0) {
+                let bombsNumberDiv = document.getElementById(bombsNumber)
+                let newbombcount = 0;
+                for (let newbomb in bombArrDATALEFT) {
+                    console.log("bombsNumber", bombsNumber);
+                    let newBombnumbers = eval(bombsNumber + String(bombArrDATALEFT[newbomb]))
+                    console.log("newBombnumbersDiv>>>>", newBombnumbers);
+                    let divOfnewNumber = document.getElementById(newBombnumbers);
+                    console.log(divOfnewNumber);
+                    console.log("newbombcount-before if>>>>", newbombcount);
+                    if (divOfnewNumber.classList.contains('bomb')) {
+                        newbombcount++;
+                        console.log("newbombcount-inside if>>>>", newbombcount);
+                    }
+                    console.log("newbombcount-after if>>>>", newbombcount);
 
-  let clicked = event.button;
+                }
+                bombsNumberDiv.setAttribute('data',newbombcount)
+                console.log(bombsNumberDiv);
+            }
+        }
+    } else if ((bombIds[i] - 9) % 10 === 0) {
+        console.log("hiii-2");
+        for (let bomb in bombArrDATARIGHT) {
+            let bombsNumber = eval(bombIds[i] + String(bombArrDATARIGHT[bomb]))
+            if (bombsNumber % 10 !== 0 && (bombsNumber - 9) % 10 !== 0) {
+                let bombsNumberDiv = document.getElementById(bombsNumber)
+        let newbombcount = 0;
+                for (let newbomb in bombArrDATA) {
+                    console.log("bombsNumber", bombsNumber);
+                    let newBombnumbers = eval(bombsNumber + String(bombArrDATA[newbomb]))
+                    console.log("newBombnumbersDiv>>>>", newBombnumbers);
+                    let divOfnewNumber = document.getElementById(newBombnumbers);
+                    console.log(divOfnewNumber);
+                    console.log("newbombcount-before if>>>>", newbombcount);
+                    if (divOfnewNumber.classList.contains('bomb')) {
+                        newbombcount++;
+                        console.log("newbombcount-inside if>>>>", newbombcount);
+                    }
+                    console.log("newbombcount-after if>>>>", newbombcount);
 
-  let i = +cell.id[0];
-  let j = +cell.id[1];
+                }
+                bombsNumberDiv.setAttribute('data',newbombcount)
+                console.log(bombsNumberDiv);
+            } else if ((bombsNumber - 9) % 10 === 0) {
+                let bombsNumberDiv = document.getElementById(bombsNumber)
+                let newbombcount = 0;
+                for (let newbomb in bombArrDATARIGHT) {
+                    console.log("bombsNumber", bombsNumber);
+                    let newBombnumbers = eval(bombsNumber + String(bombArrDATARIGHT[newbomb]))
+                    console.log("newBombnumbersDiv>>>>", newBombnumbers);
+                    let divOfnewNumber = document.getElementById(newBombnumbers);
+                    console.log(divOfnewNumber);
+                    console.log("newbombcount-before if>>>>", newbombcount);
+                    if (divOfnewNumber.classList.contains('bomb')) {
+                        newbombcount++;
+                        console.log("newbombcount-inside if>>>>", newbombcount);
+                    }
+                    console.log("newbombcount-after if>>>>", newbombcount);
 
-  let bombCount = 0;
-  let boxValue = boxValues[i][j];
+                }
+                bombsNumberDiv.setAttribute('data',newbombcount)
+                console.log(bombsNumberDiv);
+            }
 
-  if (clicked === 0) {
-    if (bombLocation.indexOf(boxValue) !== -1) {
-      revealBombs();
-      gameOver = true;
-      return;
+        }
     } else {
-      if(cell.classList.contains("correct")) {
-        return;
-      }
-      let safeBox = document.getElementById(cell.id);
-      safeBox.classList.add("correct");
-      if (i - 1 >= 0 && j - 1 >= 0) {
-        if (bombLocation.indexOf(boxValues[i - 1][j - 1]) !== -1) {
-          bombCount++;
-        }
-      }
+        console.log("hiii-3");
+        console.log("bombIds[i]", bombIds[i]);
+        for (let bomb in bombArrDATA) {
+            let bombsNumber = eval(bombIds[i] + String(bombArrDATA[bomb]))
+            if (bombsNumber % 10 !== 0 && (bombsNumber - 9) % 10 !== 0) {
+                let bombsNumberDiv = document.getElementById(bombsNumber)
+        let newbombcount = 0;
+                for (let newbomb in bombArrDATA) {
+                    console.log("bombsNumber", bombsNumber);
+                    let newBombnumbers = eval(bombsNumber + String(bombArrDATA[newbomb]))
+                    console.log("newBombnumbersDiv>>>>", newBombnumbers);
+                    let divOfnewNumber = document.getElementById(newBombnumbers);
+                    console.log(divOfnewNumber);
+                    console.log("newbombcount-before if>>>>", newbombcount);
+                    if (divOfnewNumber.classList.contains('bomb')) {
+                        newbombcount++;
+                        console.log("newbombcount-inside if>>>>", newbombcount);
+                    }
+                    console.log("newbombcount-after if>>>>", newbombcount);
 
-      if (i - 1 >= 0) {
-        if (bombLocation.indexOf(boxValues[i - 1][j]) !== -1) {
-          bombCount++;
-        }
-      }
+                }
+                bombsNumberDiv.setAttribute('data',newbombcount)
+                console.log(bombsNumberDiv);
+            } else if (bombsNumber % 10 === 0) {
+                let bombsNumberDiv = document.getElementById(bombsNumber)
+                let newbombcount = 0;
+                for (let newbomb in bombArrDATALEFT) {
+                    console.log("bombsNumber", bombsNumber);
+                    let newBombnumbers = eval(bombsNumber + String(bombArrDATALEFT[newbomb]))
+                    console.log("newBombnumbersDiv>>>>", newBombnumbers);
+                    let divOfnewNumber = document.getElementById(newBombnumbers);
+                    console.log(divOfnewNumber);
+                    console.log("newbombcount-before if>>>>", newbombcount);
+                    if (divOfnewNumber.classList.contains('bomb')) {
+                        newbombcount++;
+                        console.log("newbombcount-inside if>>>>", newbombcount);
+                    }
+                    console.log("newbombcount-after if>>>>", newbombcount);
 
-      if (i - 1 >= 0 && j + 1 <= 8) {
-        if (bombLocation.indexOf(boxValues[i - 1][j + 1]) !== -1) {
-          bombCount++;
-        }
-      }
+                }
+                bombsNumberDiv.setAttribute('data',newbombcount)
+                console.log(bombsNumberDiv);
+            } else if ((bombsNumber - 9) % 10 === 0) {
+                let bombsNumberDiv = document.getElementById(bombsNumber)
+                let newbombcount = 0;
+                for (let newbomb in bombArrDATARIGHT) {
+                    console.log("bombsNumber", bombsNumber);
+                    let newBombnumbers = eval(bombsNumber + String(bombArrDATARIGHT[newbomb]))
+                    console.log("newBombnumbersDiv>>>>", newBombnumbers);
+                    let divOfnewNumber = document.getElementById(newBombnumbers);
+                    console.log(divOfnewNumber);
+                    console.log("newbombcount-before if>>>>", newbombcount);
+                    if (divOfnewNumber.classList.contains('bomb')) {
+                        newbombcount++;
+                        console.log("newbombcount-inside if>>>>", newbombcount);
+                    }
+                    console.log("newbombcount-after if>>>>", newbombcount);
 
-      if (j - 1 >= 0) {
-        if (bombLocation.indexOf(boxValues[i][j - 1]) !== -1) {
-          bombCount++;
-        }
-      }
+                }
+                bombsNumberDiv.setAttribute('data',newbombcount)
+                console.log(bombsNumberDiv);
+            }
 
-      if (j + 1 <= 8) {
-        if (bombLocation.indexOf(boxValues[i][j + 1]) !== -1) {
-          bombCount++;
         }
-      }
-
-      if (i + 1 <= 8 && j - 1 >= 0) {
-        if (bombLocation.indexOf(boxValues[i + 1][j - 1]) !== -1) {
-          bombCount++;
-        }
-      }
-
-      if (i + 1 <= 8) {
-        if (bombLocation.indexOf(boxValues[i + 1][j]) !== -1) {
-          bombCount++;
-        }
-      }
-
-      if (i + 1 <= 8 && j + 1 <= 8) {
-        if (bombLocation.indexOf(boxValues[i + 1][j + 1]) !== -1) {
-          bombCount++;
-        }
-      }
-      score++;
-      document.getElementById("score-card").innerHTML = "Score: " + score;
-      if(score === 71) {
-        revealWinner();
-      }
-      safeBox.innerHTML = bombCount;
     }
-  } else if (clicked === 2) {
-    if (bombLocation.indexOf(boxValue) !== -1) {
-      let bombCellDetect = document.getElementById(cell.id);
-      bombCellDetect.classList.add("error");
-      bombCellDetect.innerHTML = "!";
-      return;
-    }
-  }
-};
+}
 
-const revealBombs = () => {
-  for (let i = 0; i < 9; i++) {
-    for (let j = 0; j < 9; j++) {
-      if (bombLocation.indexOf(boxValues[i][j]) !== -1) {
-        let bombCell = document.getElementById(getId(i, j));
-        bombCell.innerHTML = "";
-        bombCell.classList.remove("error");
-        bombCell.classList.add("incorrect");
-      }
-    }
-  }
-  setTimeout(() => {
-    alert("You lost the Game :(");
-  }, 1000);
-  return;
-};
 
-const revealWinner = () => {
-  setTimeout(() => {
-    alert("Wow! You are a Champion :)");
-  }, 1000);
+let boardDivs = document.querySelectorAll('.grid-item')
+boardDivs.forEach(boardCell => {
+    boardCell.addEventListener("click", revealingDivs)
+})
+boardDivs.forEach(boardCell => {
+    boardCell.addEventListener("contextmenu", addingFlag)
+})
+
+function revealingDivs(e) {
+    let id = e.target.id
+    let clickedCell = document.getElementById(id)
+
+    if (clickedCell.classList.contains('bomb')) {
+        gameOver()
+    } else {
+        clickedCell.style.backgroundColor = 'rgba(255, 255, 255, 0.5)'
+        clickedCell.style.opacity = '0.6'
+        clickedCell.classList.add('checked')
+
+        if (!clickedCell.classList.contains('bomb')) {
+            let bombCount = 0;
+            console.log("first after declaration", bombCount);
+            let bombArr = {
+                left: -1,
+                right: "+" + 1,
+                up: -10,
+                down: "+" + 10,
+                upLeft: -11,
+                upRight: -9,
+                downLeft: "+" + 9,
+                downRight: "+" + 11
+            };
+            let bombArrUP = {
+                left: -1,
+                right: "+" + 1,
+                down: "+" + 10,
+                downLeft: "+" + 9,
+                downRight: "+" + 11
+            };
+            let bombArrRIGHT = {
+                left: -1,
+                up: -10,
+                down: "+" + 10,
+                upLeft: -11,
+                downLeft: "+" + 9,
+            };
+            let bombArrDOWN = {
+                left: -1,
+                right: "+" + 1,
+                up: -10,
+                upLeft: -11,
+                upRight: -9,
+            };
+            let bombArrLEFT = {
+                right: "+" + 1,
+                up: -10,
+                down: "+" + 10,
+                upRight: -9,
+                downRight: "+" + 11
+            };
+
+            let corner1 = {
+                up: -10,
+                upRight: -9,
+                right: "+" + 1,
+            }
+            let corner2 = {
+                up: -10,
+                upLeft: -11,
+                left: -1,
+            }
+            let corner3 = {
+                down: "+" + 10,
+                downRight: "+" + 11,
+                right: "+" + 1,
+            }
+            let corner4 = {
+                down: "+" + 10,
+                downLeft: "+" + 9,
+                left: -1,
+            }
+            console.log(id, typeof id);
+
+            if (id == 0) {
+                for (let bomb in corner3) {
+                    let bombsNumber = eval(id + String(corner3[bomb]))
+                    let bombsNumberDiv = document.getElementById(bombsNumber)
+                    if (bombsNumberDiv.classList.contains('bomb')) {
+                        bombCount++;
+                        console.log("inside for loop>>>", bombCount);
+                    }
+                }
+                clickedCell.innerText = bombCount
+            } else if (id == 9) {
+                for (let bomb in corner4) {
+                    let bombsNumber = eval(id + String(corner4[bomb]))
+                    let bombsNumberDiv = document.getElementById(bombsNumber)
+                    if (bombsNumberDiv.classList.contains('bomb')) {
+                        bombCount++;
+                        console.log("inside for loop>>>", bombCount);
+                    }
+                }
+                clickedCell.innerText = bombCount
+            } else if (id == 90) {
+                console.log("id is", id);
+                for (let bomb in corner1) {
+                    let bombsNumber = eval(id + String(corner1[bomb]))
+                    let bombsNumberDiv = document.getElementById(bombsNumber)
+                    if (bombsNumberDiv.classList.contains('bomb')) {
+                        bombCount++;
+                        console.log("inside for loop>>>", bombCount);
+                    }
+                }
+                clickedCell.innerText = bombCount
+            } else if (id == 99) {
+                console.log("id is", id);
+
+                for (let bomb in corner2) {
+                    let bombsNumber = eval(id + String(corner2[bomb]))
+                    console.log("sdgsdfg", bombsNumber);
+                    let bombsNumberDiv = document.getElementById(bombsNumber)
+                    if (bombsNumberDiv.classList.contains('bomb')) {
+                        bombCount++;
+                        console.log("inside for loop>>>", bombCount);
+                    }
+                }
+                clickedCell.innerText = bombCount
+            } else if (id >= 10 && (id % 10) !== 0 && id < 89 && ((id - 9) % 10) !== 0) {
+                for (let bomb in bombArr) {
+                    let bombsNumber = eval(id + String(bombArr[bomb]))
+                    let bombsNumberDiv = document.getElementById(bombsNumber)
+                    if (bombsNumberDiv.classList.contains('bomb')) {
+                        bombCount++;
+                        console.log("inside for loop>>>", bombCount);
+                    }
+                }
+                clickedCell.innerText = bombCount
+                console.log("outsude for loop>>>", bombCount);
+            } else if (id < 10) {
+                for (let bomb in bombArrUP) {
+                    let bombsNumber = eval(id + String(bombArrUP[bomb]))
+                    let bombsNumberDiv = document.getElementById(bombsNumber)
+                    if (bombsNumberDiv.classList.contains('bomb')) {
+                        bombCount++;
+                        console.log("inside for loop>>>", bombCount);
+                    }
+                }
+                clickedCell.innerText = bombCount
+            } else if (id % 10 === 0) {
+                for (let bomb in bombArrLEFT) {
+                    let bombsNumber = eval(id + String(bombArrLEFT[bomb]))
+                    let bombsNumberDiv = document.getElementById(bombsNumber)
+                    if (bombsNumberDiv.classList.contains('bomb')) {
+                        bombCount++;
+                        console.log("inside for loop>>>", bombCount);
+                    }
+                }
+                clickedCell.innerText = bombCount
+            } else if ((id - 9) % 10 === 0) {
+                for (let bomb in bombArrRIGHT) {
+                    let bombsNumber = eval(id + String(bombArrRIGHT[bomb]))
+                    let bombsNumberDiv = document.getElementById(bombsNumber)
+                    if (bombsNumberDiv.classList.contains('bomb')) {
+                        bombCount++;
+                        console.log("inside for loop>>>", bombCount);
+                    }
+                }
+                clickedCell.innerText = bombCount
+            } else if (id > 90 && id < 99 && id !== 90 && id !== 99) {
+                for (let bomb in bombArrDOWN) {
+                    let bombsNumber = eval(id + String(bombArrDOWN[bomb]))
+                    let bombsNumberDiv = document.getElementById(bombsNumber)
+                    if (bombsNumberDiv.classList.contains('bomb')) {
+                        bombCount++;
+                        console.log("inside for loop>>>", bombCount);
+                    }
+                }
+                clickedCell.innerText = bombCount
+            }
+
+            clickedCell.setAttribute('data', bombCount)
+
+            let allClicked = document.querySelectorAll('.checked')
+            let count = 0
+            if (allClicked.length === 90) {
+                allClicked.forEach(div => {
+                    if (!div.classList.contains('bomb')) {
+                        count++;
+                    }
+                })
+                if (count === 90) {
+                    won()
+                }
+            }
+        }
+    }
+}
+
+let clickedBomb = document.querySelectorAll(".bomb")
+let shouldTriggerClick = true;
+let countdgdfg = 0
+clickedBomb.forEach(bomb => {
+    bomb.addEventListener("click", () => {
+        bomb.classList.add('checked')
+        if (shouldTriggerClick) {
+            clickedBomb.forEach(bomb => {
+                bomb.innerText = "💣"
+                bomb.classList.add('checked')
+                console.log(countdgdfg++);
+                bomb.click()
+            })
+        }
+        shouldTriggerClick = false;
+        gameOver()
+
+    })
+
+})
+
+let flagCount = 10;
+let result = document.getElementById('result')
+
+function addingFlag(e) {
+    e.preventDefault()
+    let flagsLeft = document.getElementById('flagsLeft')
+
+    let id = e.target.id
+    let clickedCell = document.getElementById(id)
+    if (!clickedCell.classList.contains('flag')) {
+        if (flagCount > 0) {
+            flagCount--;
+            clickedCell.innerText = '🚩'
+            clickedCell.classList.add('flag')
+            flagsLeft.innerText = flagCount
+        }
+    } else {
+        flagCount++;
+        clickedCell.innerText = ''
+        clickedCell.classList.remove('flag')
+        flagsLeft.innerText = flagCount
+
+    }
+
+    let flagged = 0
+    if (flagCount === 0) {
+        let allFlags = document.querySelectorAll('.flag')
+        console.log(allFlags);
+        for (let index = 0; index < allFlags.length; index++) {
+            if (!allFlags[index].classList.contains('bomb')) {
+                console.log(1);
+                flagged = 1;
+            }
+        }
+        if (flagged === 0) {
+            won()
+        }
+
+    }
+}
+
+
+
+
+function gameOver() {
+    result.innerHTML = "YOU LOSE!"
+    boardDivs.forEach(boardCell => {
+        boardCell.removeEventListener("click", revealingDivs)
+    })
+    boardDivs.forEach(boardCell => {
+        boardCell.removeEventListener("contextmenu", addingFlag)
+    })
+}
+function won() {
+    result.innerText = "YOU WIN!"
+
+    boardDivs.forEach(boardCell => {
+        boardCell.removeEventListener("click", revealingDivs)
+    })
+    boardDivs.forEach(boardCell => {
+        boardCell.removeEventListener("contextmenu", addingFlag)
+    })
 }
